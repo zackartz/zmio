@@ -10,7 +10,7 @@ export default {
             "--tw-prose-body": "rgba(var(--ctp-text), 1)",
             "--tw-prose-headings": "rgba(var(--ctp-mauve), 1)",
             "--tw-prose-hr": "rgba(var(--ctp-surface0), 1)",
-            "--tw-prose-code": "rgba(var(--ctp-pink), 1)",
+            "--tw-prose-code": "rgba(var(--ctp-red), 1)",
             a: {
               color: "rgba(var(--ctp-blue), 1)",
               "text-decoration-thickness": ".1em",

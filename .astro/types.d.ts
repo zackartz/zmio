@@ -136,6 +136,13 @@ declare module 'astro:content' {
 
 	type ContentEntryMap = {
 		"blog": {
+"deploy-astro-on-nixos.md": {
+	id: "deploy-astro-on-nixos.md";
+  slug: "deploy-astro-on-nixos";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".md"] };
 };
 
 	};
