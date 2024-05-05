@@ -60,7 +60,6 @@ I use [pnpm](https://pnpm.io) as my package manager of choice, and as such we ha
 Now, lets add the package spec:
 
 ```nix
-   ...
 {
   in {
     # add packages :)
@@ -73,7 +72,7 @@ Now, lets add the package spec:
       };
     });
 
-    ...
+    # ...
   };
 }
 ```
@@ -155,18 +154,18 @@ After adding the repo of my blog project to my server's flake like this:
 ```nix
 {
    inputs = {
-     ... # all our previous definitions
+     # all our previous definitions
 
      blog.url = "github:zackartz/zmio";
    };
 
-   ...
+   # ...
 
    nixosConfigurations.pluto = nixpkgs_stable.lib.nixosSystem {
       specialArgs = {inherit inputs;};
       modules = [
-        ... # previous modules
-        inputs.blog.nixosModule.default
+        # previous modules
+        inputs.blog.nixosModule
       ];
    };
 
