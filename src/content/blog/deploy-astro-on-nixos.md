@@ -61,7 +61,7 @@ Now, lets add the package spec:
 
 ```nix
    ...
-
+{
   in {
     # add packages :)
     packages = eachSystem (pkgs: {
@@ -75,6 +75,7 @@ Now, lets add the package spec:
 
     ...
   };
+}
 ```
 
 Now, when we run `nix build`, everything works as expected, great! But how can we see the outputs of our build? If we run the following command:
@@ -98,6 +99,9 @@ At this point, we could add this repo as a input to the flake configuring our se
 I added the following code to the outputs section of my `flake.nix`.
 
 ```nix
+{
+ # previous outputs
+
  nixosModule = {
    config,
    lib,
@@ -133,6 +137,7 @@ I added the following code to the outputs section of my `flake.nix`.
        };
      };
    };
+}
 ```
 
 Woah, that's a lot of code, let's break it down.
@@ -148,27 +153,31 @@ Enough code, lets deploy!
 After adding the repo of my blog project to my server's flake like this:
 
 ```nix
+{
    inputs = {
-    ... # all our previous definitions
+     ... # all our previous definitions
 
-    blog.url = "github:zackartz/zmio";
+     blog.url = "github:zackartz/zmio";
    };
 
    ...
 
-    nixosConfigurations.pluto = nixpkgs_stable.lib.nixosSystem {
+   nixosConfigurations.pluto = nixpkgs_stable.lib.nixosSystem {
       specialArgs = {inherit inputs;};
       modules = [
         ... # previous modules
         inputs.blog.nixosModule.default
       ];
-    };
+   };
+
+   # other configs
+}
 ```
 
 We can add the following to our server's main nixosModule:
 
 ```nix
-  zmio.blog.enable = true;
+   zmio.blog.enable = true;
 ```
 
 And that should be it, after a rebuild it should be live!
