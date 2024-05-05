@@ -5,8 +5,6 @@ pubDate: "May 05 2024"
 heroImage: "/blog-placeholder-3.jpg"
 ---
 
-# Deploying an Astro project on NixOS
-
 [Nix](https://nixos.org) is an incredible project and has completely change the way I think about configuring linux and macOS environments. Recently, I moved my personal server from Ubuntu to NixOS to match my desktop environment. ([dotfiles here!](https://github.com/zackartz/nixos-dots)). In doing so, I realized I needed to move this blog over, too. I could simply deploy a docker container like I did before, but I think it would be interesting and informative to try and build a NixOS module around it. Hopefully you find it useful :)
 
 ## The `flake.nix` file.
@@ -17,38 +15,38 @@ A example for a starter flake for a Astro project may look like this:
 
 ```nix
 {
-nputs = {
- nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
- systems.url = "github:nix-systems/default";
-;
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    systems.url = "github:nix-systems/default";
+  };
 
-utputs = {
- systems,
- nixpkgs,
- ...
- @ inputs: let
- eachSystem = f:
-   nixpkgs.lib.genAttrs (import systems) (
-     system:
-       f nixpkgs.legacyPackages.${system}
-   );
-n {
- devShells = eachSystem (pkgs: {
-   default = pkgs.mkShell {
-     buildInputs = [
-       pkgs.nodejs
+  outputs = {
+    systems,
+    nixpkgs,
+    ...
+  } @ inputs: let
+    eachSystem = f:
+      nixpkgs.lib.genAttrs (import systems) (
+        system:
+          f nixpkgs.legacyPackages.${system}
+      );
+  in {
+    devShells = eachSystem (pkgs: {
+      default = pkgs.mkShell {
+        buildInputs = [
+          pkgs.nodejs
 
-       pkgs.nodePackages.pnpm
+          pkgs.nodePackages.pnpm
 
-       pkgs.nodePackages.typescript
-       pkgs.nodePackages.typescript-language-server
-       pkgs.nodePackages."@tailwindcss/language-server"
-       pkgs.nodePackages."@astrojs/language-server"
-     ];
-   };
- });
-;
-
+          pkgs.nodePackages.typescript
+          pkgs.nodePackages.typescript-language-server
+          pkgs.nodePackages."@tailwindcss/language-server"
+          pkgs.nodePackages."@astrojs/language-server"
+        ];
+      };
+    });
+  };
+}
 ```
 
 You can see for my inputs I am taking in `nixpkgs` and `nix-systems`, which I am using to generate a devShell for every system architechture supported by NixOS. The `devShells` all import the following nix packages, `nodejs`, `pnpm`, `typescript`, `typescript-language-server`, `tailwindcss-language-server`, `astrojs-lanaguage-server`. Lets add add a package!
@@ -62,21 +60,21 @@ I use [pnpm](https://pnpm.io) as my package manager of choice, and as such we ha
 Now, lets add the package spec:
 
 ```nix
-...
+   ...
 
-n {
- # add packages :)
- packages = eachSystem (pkgs: {
-   default = inputs.pnpm2nix.packages.${pkgs.system}.mkPnpmPackage {
-     name = "zm-blog";
-     src = ./.;
-     packageJSON = ./package.json;
-     pnpmLock = ./pnpm-lock.yaml;
-   };
- });
+  in {
+    # add packages :)
+    packages = eachSystem (pkgs: {
+      default = inputs.pnpm2nix.packages.${pkgs.system}.mkPnpmPackage {
+        name = "zm-blog";
+        src = ./.;
+        packageJSON = ./package.json;
+        pnpmLock = ./pnpm-lock.yaml;
+      };
+    });
 
- ...
-;
+    ...
+  };
 ```
 
 Now, when we run `nix build`, everything works as expected, great! But how can we see the outputs of our build? If we run the following command:
@@ -97,10 +95,10 @@ Awesome, if we ls this path, we get exactly what we are expecting from the build
 
 At this point, we could add this repo as a input to the flake configuring our server, add a new `virtualHost` for the domain we want this to run on, point the root at this package and call it a day, but I want to take it one step further. I want to write a NixOS module to make the configuration server side even easier.
 
-Add the following code to the outputs section of your `flake.nix`.
+I added the following code to the outputs section of my `flake.nix`.
 
 ```nix
-nixosModule = {
+ nixosModule = {
    config,
    lib,
    pkgs,
@@ -136,3 +134,45 @@ nixosModule = {
      };
    };
 ```
+
+Woah, that's a lot of code, let's break it down.
+
+Because Nix (the language) is mostly used for configuration, defining variables anywhere could be confusing, so you have to do it in a special scope, that being the `let .. in` syntax. In this example, we are setting the variable `cfg` to be equal to `config.zmio.blog`, for convenience. Notice also the `with lib;`, this allows us to call the values on `lib` as a top-level var, ie, `lib.mkOption` would become `mkOption`.
+
+The `options.zmio.blog` object contains the options, their types and their defaults, and the `config` section is the code that gets executed.
+
+Enough code, lets deploy!
+
+## Deploying on the server
+
+After adding the repo of my blog project to my server's flake like this:
+
+```nix
+   inputs = {
+    ... # all our previous definitions
+
+    blog.url = "github:zackartz/zmio";
+   };
+
+   ...
+
+    nixosConfigurations.pluto = nixpkgs_stable.lib.nixosSystem {
+      specialArgs = {inherit inputs;};
+      modules = [
+        ... # previous modules
+        inputs.blog.nixosModule.default
+      ];
+    };
+```
+
+We can add the following to our server's main nixosModule:
+
+```nix
+  zmio.blog.enable = true;
+```
+
+And that should be it, after a rebuild it should be live!
+
+## Conclusion
+
+NixOS allows for a truly unique way of deploying apps, and if you thought this was interesting, be sure to check out Nix! There's tons of other cool stuff to check out!
