@@ -54,8 +54,8 @@
 
         config = mkIf cfg.enable {
           services.nginx.virtualHosts.${cfg.domain} = {
-            forceSSL = cfg.ssl;
-            enableACME = cfg.ssl;
+            forceSSL = ${cfg.ssl};
+            enableACME = ${cfg.ssl};
             root = "${packages.${pkgs.system}.default}";
           };
         };
