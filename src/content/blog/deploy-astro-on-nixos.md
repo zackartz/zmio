@@ -61,6 +61,17 @@ Now, lets add the package spec:
 
 ```nix
 {
+  outputs = {
+    systems,
+    nixpkgs,
+    self,
+    ...
+  } @ inputs: let
+    eachSystem = f:
+      nixpkgs.lib.genAttrs (import systems) (
+        system:
+          f nixpkgs.legacyPackages.${system}
+      );
   in {
     # add packages :)
     packages = eachSystem (pkgs: {

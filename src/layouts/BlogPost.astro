@@ -9,15 +9,10 @@ type Props = any;
 const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 ---
 
-<html lang="en">
+<html lang="en" class="ctp-mocha bg-ctp-base">
 	<head>
 		<BaseHead title={title} description={description} />
 		<style>
-			main {
-				width: calc(100% - 2em);
-				max-width: 100%;
-				margin: 0;
-			}
 			.hero-image {
 				width: 100%;
 			}
@@ -53,9 +48,9 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 		</style>
 	</head>
 
-	<body>
+	<body class="bg-base">
 		<Header />
-		<main>
+		<main class="px-8">
 			<article>
 				<div class="hero-image">
 					{heroImage && <img width={1020} height={510} src={heroImage} alt="" />}
@@ -72,8 +67,8 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 								)
 							}
 						</div>
-						<h1>{title}</h1>
-						<hr />
+						<h1 class="text-ctp-text">{title}</h1>
+						<hr class="border-ctp-surface0" />
 					</div>
 					<slot />
 				</div>

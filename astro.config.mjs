@@ -7,5 +7,10 @@ import tailwind from "@astrojs/tailwind";
 // https://astro.build/config
 export default defineConfig({
   site: "https://zackmyers.io",
+  markdown: {
+    shikiConfig: {
+      theme: "catppuccin-frappe",
+    },
+  },
   integrations: [mdx(), sitemap(), tailwind()],
 });

@@ -74,6 +74,7 @@
           pkgs.nodePackages.pnpm
           # pkgs.yarn
 
+          pkgs.prettierd
           pkgs.nodePackages.typescript
           pkgs.nodePackages.typescript-language-server
           pkgs.nodePackages."@tailwindcss/language-server"
