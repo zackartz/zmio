@@ -8,6 +8,7 @@
   outputs = {
     systems,
     nixpkgs,
+    self,
     ...
   } @ inputs: let
     eachSystem = f:
@@ -29,7 +30,6 @@
       config,
       lib,
       pkgs,
-      self,
       ...
     }:
       with lib; let
