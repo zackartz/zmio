@@ -29,6 +29,7 @@
       config,
       lib,
       pkgs,
+      self,
       ...
     }:
       with lib; let
@@ -38,14 +39,14 @@
           enable = mkEnableOption "Enables the Blog Site";
 
           domain = mkOption rec {
-            type = type.str;
+            type = types.str;
             default = "zackmyers.io";
             example = default;
             description = "The domain name for the website";
           };
 
           ssl = mkOption rec {
-            type = type.bool;
+            type = types.bool;
             default = true;
             example = default;
             description = "Whether to enable SSL on the domain or not";
@@ -56,7 +57,7 @@
           services.nginx.virtualHosts.${cfg.domain} = {
             forceSSL = cfg.ssl;
             enableACME = cfg.ssl;
-            root = "${packages.${pkgs.system}.default}";
+            root = "${self.packages.${pkgs.system}.default}";
           };
         };
       };
