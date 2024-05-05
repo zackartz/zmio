@@ -195,3 +195,8 @@ And that should be it, after a rebuild it should be live!
 ## Conclusion
 
 NixOS allows for a truly unique way of deploying apps, and if you thought this was interesting, be sure to check out Nix! There's tons of other cool stuff to check out!
+
+## Sources
+
+- [server configuration](https://github.com/zackartz/nixos-dots/blob/418bbead433fcf704f8aa9e48039405b6b0e5f33/hosts/pluto/configuration.nix)
+- [blog configuration](https://github.com/zackartz/zmio/blob/141de7c95f14ece5adc5fdaa4e93230dea9e99a8/flake.nix)
