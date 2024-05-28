@@ -6,6 +6,10 @@
   --gray-dark: var(--ctp-text);
 }
 
+::selection {
+  @apply bg-ctp-mauve text-ctp-base;
+}
+
 @layer base {
   html {
     @apply text-ctp-text;

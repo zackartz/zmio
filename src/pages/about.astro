@@ -1,14 +1,21 @@
 ---
-import Layout from '../layouts/BlogPost.astro';
+import Layout from "../layouts/Layout.astro";
+import BlogPost from "../layouts/BlogPost.astro";
 ---
 
-<Layout
-	title="About Me"
-	description="About Zachary Myers"
-	pubDate={new Date('April 13 2024')}
->
-	<article>
-		<h3 class="">Hey there!</h3>
-		<p class="">My name is Zachary Myers, I am a software engineer from Honolulu, now living in Saint Joseph, MI. I am most interested in backend programming, and primarily use languages like Rust and Go, though also have plenty of experience with JavaScript and TypeScript as well. I am looking for work! Feel free to <a href="https://cv.zackster.zip" target="_blank">check out my cv</a> and <a href="mailto:me@zackmyers.io">reach out</a> if you are interested!</p>
-	</article>
+<Layout title="About Me" description="About Zachary Myers">
+  <BlogPost title="About" description="About Zachary" pubDate={new Date()}>
+    <article>
+      <h3 class="">Hey there!</h3>
+      <p class="">
+        My name is Zachary Myers, I am a software engineer from Honolulu, now
+        living in Saint Joseph, MI. I am most interested in backend programming,
+        and primarily use languages like Rust and Go, though also have plenty of
+        experience with JavaScript and TypeScript as well. I am looking for
+        work! Feel free to <a href="https://cv.zackster.zip" target="_blank"
+          >check out my cv</a
+        > and <a href="mailto:me@zackmyers.io">reach out</a> if you are interested!
+      </p>
+    </article>
+  </BlogPost>
 </Layout>

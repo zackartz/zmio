@@ -1,43 +1,57 @@
 ---
-import BaseHead from '../../components/BaseHead.astro';
-import Header from '../../components/Header.astro';
-import Footer from '../../components/Footer.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
-import { getCollection } from 'astro:content';
-import FormattedDate from '../../components/FormattedDate.astro';
+import Layout from "../../layouts/Layout.astro";
+import FormattedDate from "../../components/FormattedDate.astro";
+import { SITE_TITLE, SITE_DESCRIPTION } from "../../consts";
+import { getCollection } from "astro:content";
 
-const posts: any[] = (await getCollection('blog')).sort(
-	(a: any, b: any) => a.data.pubDate.valueOf() - b.data.pubDate.valueOf()
+const posts: any[] = (await getCollection("blog")).sort(
+  (a: any, b: any) => a.data.pubDate.valueOf() - b.data.pubDate.valueOf(),
 );
 ---
 
-<!doctype html>
-<html lang="en" class="ctp-mocha bg-ctp-base">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-		</head>
-	<body>
-		<Header />
-		<main class="w-full flex justify-center">
-{posts.length === 0 && <p class="py-48">Sorry! No posts at the minute, coming soon!</p>}
-			<section>
-				<ul class="space-y-4">
-					{
-						posts.sort((a, b) => b.data.pubDate - a.data.pubDate).map((post) => (
-							<li class="p-4 rounded-xl shadow-lg border border-ctp-surface2">
-								<a href={`/blog/${post.slug}/`}>
-									<img class="rounded-lg" width={720} height={360} src={post.data.heroImage} alt="" />
-									<h4 class="text-2xl p-3 font-bold text-center text-ctp-mauve">{post.data.title}</h4>
-									<p class="text-center">
-										<FormattedDate date={post.data.pubDate} />
-									</p>
-								</a>
-							</li>
-						))
-					}
-				</ul>
-			</section>
-		</main>
-		<Footer />
-	</body>
-</html>
+<Layout title={SITE_TITLE} description={SITE_DESCRIPTION}>
+  <main class="flex relative justify-center w-full">
+    {
+      posts.length === 0 && (
+        <p class="py-48">Sorry! No posts at the minute, coming soon!</p>
+      )
+    }
+    <section class="p-16">
+      <h1 class="pb-8 w-3/4 text-4xl font-bold leading-gi">
+        My thoughts on NixOS, Rust, and other software tools.
+      </h1>
+      <h2 class="pb-24 text-lg">
+        My thoughts & experiences collected into one place.
+      </h2>
+      <div class="border-l border-ctp-surface0">
+        <ul class="space-y-4">
+          {
+            posts
+              .sort((a, b) => b.data.pubDate - a.data.pubDate)
+              .map((post) => (
+                <div class="flex">
+                  <div class="p-4 my-auto w-[164px]">
+                    <FormattedDate date={post.data.pubDate} />
+                  </div>
+
+                  <li class="w-full">
+                    <div class="flex flex-col p-8 w-full rounded-xl border transition-all border-ctp-base hover:border-ctp-surface0">
+                      <a href={`/blog/${post.slug}/`}>
+                        <h4 class="text-lg font-bold text-ctp-mauve">
+                          {post.data.title}
+                        </h4>
+                        <h5 class="mt-2 text-sm">{post.data.description}</h5>
+                        <p class="pt-2 text-sm font-bold text-ctp-blue">
+                          Read ->
+                        </p>
+                      </a>
+                    </div>
+                  </li>
+                </div>
+              ))
+          }
+        </ul>
+      </div>
+    </section>
+  </main>
+</Layout>
